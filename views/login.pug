@@ -1,0 +1,70 @@
+doctype html
+html
+  head
+    title Blog
+    link(rel='stylesheet', type='text/css', href='../css/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
+  body
+    wrapper
+      nav
+        ul
+          li
+            a(href='/') Home
+        
+          li
+            a(href='/login') Log In
+          li
+            a(href='/signup') Sign Up
+  h1  Signup Page
+    
+  form#msform(action='/login', method='post')
+    fieldset
+      h2.fs-title Welcome back
+      h3.fs-subtitle Log in below
+      input(id = "email",type='email', name='email', placeholder='Email')
+      |  
+      input(id = "password", type='password', name='pass', placeholder='Password')
+      input(class="submitbutton", type='submit', name='submit', value='Submit')
+      p No member yet? <a href="/signup" class="member">register</a> here
+
+  h3#error-message
+    
+    script(src="/js/jquery-3.1.1.js")
+    script(src="/js/custom.js")
+    script.
+      $(document).ready(function(){
+      $('.submitbutton').click(function(event){
+        if($('#email').val().trim().length === 0 || $('#password').val().trim().length ===0){
+          event.preventDefault();
+          $('#error-message').html("Your username or password is empty");
+          
+        }
+      });
+      });
+    //- fieldset
+    //-   h2.fs-title Social Profiles
+    //-   h3.fs-subtitle Your presence on the social network
+    //-   |  
+    //-   input(type='text', name='twitter', placeholder='Twitter')
+    //-   |  
+    //-   input(type='text', name='facebook', placeholder='Facebook')
+    //-   |  
+    //-   input(type='text', name='gplus', placeholder='Google Plus')
+    //-   |  
+    //-   input.previous.action-button(type='button', name='previous', value='Previous')
+    //-   |  
+    //-   input.next.action-button(type='button', name='next', value='Next')
+    //- fieldset
+    //-   h2.fs-title Personal Details
+    //-   h3.fs-subtitle We will never sell it
+    //-   |  
+    //-   input(type='text', name='fname', placeholder='First Name')
+    //-   |  
+    //-   input(type='text', name='lname', placeholder='Last Name')
+    //-   |  
+    //-   input(type='text', name='phone', placeholder='Phone')
+    //-   textarea(name='address', placeholder='Address')
+    //-   |  
+    //-   input.previous.action-button(type='button', name='previous', value='Previous')
+      |  
+      input.submit.action-button(type='submit', name='submit', value='Submit')

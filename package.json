@@ -1,0 +1,28 @@
+{
+  "name": "basic_node_blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kirriee/basic_node_blog.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kirriee/basic_node_blog/issues"
+  },
+  "homepage": "https://github.com/Kirriee/basic_node_blog#readme",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "express-session": "^1.15.1",
+    "pg": "^6.1.2",
+    "pug": "^2.0.0-beta11",
+    "sequelize": "^3.30.2",
+    "sessions": "0.0.2-7"
+  }
+}
