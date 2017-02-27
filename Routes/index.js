@@ -8,8 +8,8 @@ routerLogin.use(bodyParser.urlencoded({
 }))
 
 // get request index page
-routerLogin.get('/login', function(request, response){
-    response.render('login')
+routerLogin.get('/', function(request, response){
+    response.render('index')
 });
 
 

@@ -2,50 +2,96 @@ const sequelize = require('sequelize')
 
 // Creating an empty object for the database
 
-const DB = {
 
-}
 
-DB.connect = new sequelize('blogapp', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
-    host: 'localhost',
-    dialect: 'postgres'
-})
+// db.connect = new sequelize('blogapp', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
+//     host: 'localhost',
+//     dialect: 'postgres'
+// })
 
 // Testing Database
-DB // Of: Sequelize
-    .sync({ force: true })
-    .then(function(err) {
+db // Of: Sequelize
+.sync({ force: true })
+.then(function(err) {
     console.log('Testing table: check!');
 }, function (err) { 
     console.log('An error occurred while creating the table:', err);
 });
 
-DB.User = DB.connect.define ('user', {
-    userName: 	sequelize.STRING,
-    email: 		{type: sequelize.STRING, unique: true},
-    password: 	sequelize.STRING
-})
+var User = db.define('user', {
+    userName:  {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    },
+    password:   {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    },
+    email:   {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    }
+});
 
-DB.Post = DB.connect.define ('post', {
-    title: 	sequelize.STRING,
-    body: 	sequelize.TEXT
-})
+var Post = db.define('post', {
+    title:  {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    },
+    body:   {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    }
+});
 
-DB.Comment = DB.connect.define ('comment', {
-    userName: sequelize.TEXT,
-    body: sequelize.TEXT
-})
+var Comment = db.define('comment', {
+    userName:  {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    },
+    body:   {
+        type: Sequelize.STRING,
+        allowNull: false,
+        isUnique: true
+    }
+});
+
+db
+    //sync the models
+    .sync({force:true})
+    .then(function(){
+        //then create first message
+        return User.create({
+            userName: 'Jane Smith',
+            email: 'jane@hotmail.com', 
+            password: 'ikbeneenpaard'
+        }).then(function () {
+            var server = app.listen(4000, function () {
+                console.log('Example app listening on port: ' + server.address().port);
+            });
+        });
+    }, function (error) {
+        console.log('sync failed: ');
+        console.log(error);
+    });
+
 
 // DB relations
-DB.User.hasMany(DB.Post)
-DB.User.hasMany(DB.Comment)
-DB.Post.belongsTo(DB.User)
-DB.Post.hasMany(DB.Comment)
-DB.Comment.belongsTo(DB.Post)
-DB.Comment.belongsTo(DB.User)
+db.User.hasMany(db.Post)
+db.User.hasMany(db.Comment)
+db.Post.belongsTo(db.User)
+db.Post.hasMany(db.Comment)
+db.Comment.belongsTo(db.Post)
+db.Comment.belongsTo(db.User)
 
-DB.connect.sync({force:true}).then(DB => {
+db.connect.sync({force:true}).then(db => {
     console.log('Synced with Database')
 })
 
-module.exports = DB
+module.exports = db
