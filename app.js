@@ -38,9 +38,9 @@ app.get('/', function(request, response){
 
 
 app.use(session({
-    secret: 'oh wow very secret much security',
-    resave: true,
-    saveUninitialized: false
+	secret: 'oh wow very secret much security',
+	resave: true,
+	saveUninitialized: false
 }));
 
 app.post('/signup', function(request, response){
@@ -69,27 +69,108 @@ app.post('/login', function(request, response){
 	}, function (error) {
 		response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
 	});
+
 });
-
-
 var User = db.define('user', {
-	userName:  Sequelize.STRING,
-	email:  Sequelize.STRING,
-	password:  Sequelize.STRING,
-	
+	userName:  {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	password:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	email:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
 });
+
+var Post = db.define('post', {
+	title:  {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	body:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
+});
+
+var Comment = db.define('comment', {
+	userName:  {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	body:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
+});
+
+// var User = db.define('user', {
+// 	userName:  Sequelize.STRING,
+// 	email:  Sequelize.STRING,
+// 	password:  Sequelize.STRING,
+
+// });
+
+// var Post = db.define('post', {
+// 	title:  Sequelize.STRING,
+// 	body:  Sequelize.STRING,
+
+
+// });
 
 app.get('/login', function(request, response){
 	response.render('login')
 });
 
 app.get('/profile', function(request, response){
-	response.render('profile')
+	
+	Post.findAll()
+	.then (function(myMessages){
+		console.log(myMessages.dataValues);
+		response.render('profile',{key: myMessages});
+
+	})
 });
 
+app.post('/profile', function(request, response){
+	Post.create({
+		title: request.body.title,
+		body: request.body.body
+	}).then(function(){
+		response.redirect("/profile")
+	})
+})
+
+// app.get("/messages", function(request, response){
+// 	(function(myMessages){
+// 		Message.findAll()
+// 		.then console.log(myMessages.dataValues);
+// 		response.render('messages',{key: myMessages});
+// 	})		
+
+// });
 app.get('/signup', function(request, response){
 	response.render('signup')
 });
+
+// DB relations
+User.hasMany(Post)
+// User.hasMany(Comment)
+Post.belongsTo(User)
+// Post.hasMany(Comment)
+// Comment.belongsTo(Post)
+// Comment.belongsTo(User)
 
 db
     //sync the models
@@ -100,12 +181,17 @@ db
         	userName: 'Jane Smith',
         	email: 'jane@hotmail.com', 
         	password: 'ikbeneenpaard'
-        }).then(function () {
-        	var server = app.listen(4000, function () {
-        		console.log('Example app listening on port: ' + server.address().port);
-        	});
-        });
-    }, function (error) {
+        }).then(function(){
+        	return Post.create({
+        		title: 'dit is een test',
+        		body: 'hallo hallo'
+        	})
+        })
+    }).then(function () {
+    	var server = app.listen(4000, function () {
+    		console.log('Example app listening on port: ' + server.address().port);
+    	});
+    }).then(function (error) {
     	console.log('sync failed: ');
     	console.log(error);
     });

@@ -15,7 +15,7 @@ html
             a(href='/login') Log In
           li
             a(href='/signup') Sign Up
-  h1  Signup Page
+  h1  Login Page
     
   form#msform(action='/login', method='post')
     fieldset
@@ -23,7 +23,7 @@ html
       h3.fs-subtitle Log in below
       input(id = "email",type='email', name='email', placeholder='Email')
       |  
-      input(id = "password", type='password', name='pass', placeholder='Password')
+      input(id = "password", type='password', name='password', placeholder='Password')
       input(class="submitbutton", type='submit', name='submit', value='Submit')
       p No member yet? <a href="/signup" class="member">register</a> here
 

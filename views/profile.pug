@@ -10,10 +10,49 @@ html
         ul
           li
             a(href='/') Home
+          li
+            a(class='addpost') Add post
         
           li
-            a(href='/login') Log In
+            a(href='/login') Edit profile
           li
-            a(href='/signup') Sign Up
-  h1  Profile Page
+            a(href='/signup') Log out
+  h1  My Posts
+  .allPosts
+    each message in key
+      p #{message.title}
+      p #{message.body}
+  .container
+      form(action='/profile', method="post") 
+        p| Title:
+        |  
+        input(type='text', name='title', size='30', placeholder='Type the title of the message here')
+        
+        br
+       
+        p|  Body:
+        |  
+        textarea(name='body', rows='10', cols='30', placeholder='Type your message here')
+       
+        br
+        |  
+        button(class="buttonblue",type='submit') Submit
+  
+
+
+  script(src="/js/jquery-3.1.1.js")
+  script(src="/js/custom.js")
+  script.
+       $(document).ready(function(){
+        $('.container').hide();
+        });
+        $('.addpost').click(function(){
+        $('.allPosts').hide()      //- event.preventDefault();
+        $('.container').toggle()
+        })
+        $('.buttonblue').click(function(){
+         $('.allPosts').show()
+        })
+           
+   
     
