@@ -49,7 +49,7 @@ app.post('/signup', function(request, response){
 		email: request.body.email,
 		password: request.body.password
 	}).then( function() {
-		response.redirect("/")
+		response.redirect("/profile")
 	})
 	console.log("ik doe het")
 })
@@ -134,14 +134,20 @@ app.get('/login', function(request, response){
 });
 
 app.get('/profile', function(request, response){
-	
-	Post.findAll()
-	.then (function(myMessages){
-		console.log(myMessages.dataValues);
+	var user = request.session.user;
+	if (user === undefined) {
+		response.redirect('/login');
+	} else {
+		Post.findAll()
+		.then (function(myMessages){
+		// console.log(myMessages.dataValues);
 		response.render('profile',{key: myMessages});
-
+	// 	response.render('profile',{
+	// 		user:user});
+	
 	})
-});
+}})
+// });
 
 app.post('/profile', function(request, response){
 	Post.create({
@@ -180,13 +186,14 @@ db
         return User.create({
         	userName: 'Jane Smith',
         	email: 'jane@hotmail.com', 
-        	password: 'ikbeneenpaard'
-        }).then(function(){
-        	return Post.create({
+        	password: '123'
+        }).then(function(user){
+        	return user.createPost({
         		title: 'dit is een test',
         		body: 'hallo hallo'
         	})
         })
+
     }).then(function () {
     	var server = app.listen(4000, function () {
     		console.log('Example app listening on port: ' + server.address().port);

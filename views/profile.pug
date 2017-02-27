@@ -18,10 +18,13 @@ html
           li
             a(href='/signup') Log out
   h1  My Posts
-  .allPosts
+  .allPosts.flex-container
     each message in key
-      p #{message.title}
-      p #{message.body}
+      .row
+        .card
+          i.pin
+          p #{message.title}
+          p #{message.body}
   .container
       form(action='/profile', method="post") 
         p| Title:
