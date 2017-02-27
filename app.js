@@ -55,7 +55,7 @@ app.post('/signup', function(request, response){
 })
 
 app.post('/login', function(request, response){
-	db.User.findOne({
+	User.findOne({
 		where: {
 			email: request.body.email
 		}
