@@ -1,3 +1,4 @@
+
 doctype html
 html
   head
@@ -7,26 +8,33 @@ html
   body
     wrapper
       nav
-        ul
+        ul.navbar
+          li.leftside
+           a Hello #{name}
+          li.leftside
+            a(href='/profile') My profile
           li
-            a(href='/') Home
+            a(href='/posts') Home
           li
             a(class='addpost') Add post
-        
           li
             a(href='/login') Edit profile
           li
             a(href='/signup') Log out
-  h1  My Posts
+  h1  My Profile
   .allPosts.flex-container
     each message in key
       .row
         .card
-          i.pin
-          p #{message.title}
+          h1 #{message.title}
           p #{message.body}
+          div.footerpost
+           form(class='comment', action='/comment', method="post")
+             input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
+             |
+             button(class="sendbutton",type='submit') Send
   .container
-      form(action='/profile', method="post") 
+      form(action='/posts', method="post") 
         p| Title:
         |  
         input(type='text', name='title', size='30', placeholder='Type the title of the message here')
@@ -56,6 +64,12 @@ html
         $('.buttonblue').click(function(){
          $('.allPosts').show()
         })
+        //- $("input").keypress(function(event) {
+        //-  if (event.which == 13) {
+        //-   event.preventDefault();
+        //-   $("form").submit();
+        //-    }
+        //-   });
            
    
     
