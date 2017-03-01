@@ -56,22 +56,36 @@ app.get('/profile', function(request, response){
 	var user = request.session.user;
 	if (user === undefined) {
 		response.redirect('/login');
-	} else {
+	} 
+	else {
 		Post.findAll(
 		{
-			where:{
+			where:
+			{
 				userId: request.session.user.id
-			}
-		}
-		)
-		.then (function(myMessages){
-			response.render('profile',
-				{key: myMessages,
-					name: request.session.user.userName});
-
-
+			},
+			include:[ User, Comment ]
 		})
-	}})
+		.then(function(posts){
+			// console.log(posts)
+			// console.log('logging comments')
+			// console.log(posts[0].comments)
+
+			// for (var i=0; i<posts.length; i++){
+			// 	console.log(posts[i].comments)
+			// }
+
+			response.render('profile',
+			{
+				messages: posts,
+				name: request.session.user.userName
+			});
+
+		
+		})
+		
+	}
+})
 
 
 // get request posts page
@@ -80,15 +94,17 @@ app.get('/posts', function(request, response){
 	if (user === undefined) {
 		response.redirect('/login');
 	} else {
-		Post.findAll({
+		Post.findAll(
+		{
 			include: [User, Comment]
-		})
-		.then (function(allMessages){
-			response.render('posts', 
-				{
-					key:allMessages,
-					name: request.session.user.userName
-				});
+		}
+		)
+		.then (function(posts){
+			response.render('posts',
+			{
+				messages:posts,
+				name: request.session.user.userName
+			});
 		})
 	}})
 
@@ -139,15 +155,34 @@ app.post('/posts', function(request, response){
 	})
 })
 
-
+app.post('/posts', function(request, response){
+	
+	Post.create({
+		title: request.body.title,
+		body: request.body.body,
+		userId: request.session.user.id
+		//  
+	}).then(function(){
+		response.redirect("/posts")
+	})
+})
 app.post('/comment', function(request, response){
-    Comment.create({
-        body: request.body.body,
-        postId: request.body.postId,
-        userId: request.session.user.id
-    }).then(function(){
-        response.redirect("/profile")
-    })
+	Comment.create({
+		body: request.body.body,
+		postId: request.body.postId,
+		userId: request.session.user.id
+	}).then(function(){
+		response.redirect("/profile")
+	})
+})
+app.post('/comments', function(request, response){
+	Comment.create({
+		body: request.body.body,
+		postId: request.body.postId,
+		userId: request.session.user.id
+	}).then(function(){
+		response.redirect("/posts")
+	})
 })
 //databases
 
@@ -212,7 +247,7 @@ Comment.belongsTo(User)
 
 db
     //sync the models
-    .sync({force:false})
+    .sync({force:true})
     .then(function(){
         //then create first message
         return User.create({
@@ -220,19 +255,20 @@ db
         	email: 'jane@hotmail.com', 
         	password: '123'
         }).then(function(user){
-       	return user.createPost({
+        	return user.createPost({
         		title: 'dit is een test',
         		body: 'hallo hallo'
         	})
         })
-        // .then(function(user){
-        // return post.createComment({
-        // 		body: "sklfksnv"
-        // 	})
-        // })
+        .then(function(post){
+        	return post.createComment({
+        		body: "sklfksnv",
+        		userId: post.userId
+        	})
+        })
 
     })
-  
+
     .then(function () {
     	var server = app.listen(4000, function () {
     		console.log('Example app listening on port: ' + server.address().port);
@@ -241,3 +277,4 @@ db
     	console.log('sync failed: ');
     	console.log(error);
     });
+
