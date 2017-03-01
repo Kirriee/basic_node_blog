@@ -1,0 +1,68 @@
+doctype html
+html
+    head
+        title Blog
+        link(rel='stylesheet', type='text/css', href='../css/style.css')
+        link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
+        body
+            wrapper
+                nav
+                    ul.navbar
+                        li.leftside
+                            a Hello #{name}
+                        li.leftside
+                            a(href='/profile') My profile
+                        li
+                            a(class='addpost') Add post
+                        li
+                            a(href='/login') Edit profile
+                        li
+                            a(href='/signup') Log out
+        h1  All Posts
+            .allPosts.flex-container
+                each message in messages
+                    .row
+                        .card
+                        i.pin
+                        p #{message.title}
+                        p #{message.body}
+                        p Post by: #{message.user.userName}
+                        div.footerpost
+                            form(class='comment', action='/comments', method="post")
+                                input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
+                                input(type="hidden" value=message.id, name="postId")
+                                button(class="sendbutton",type='submit') Send
+                                div#comments
+                    each comment in message.comments
+                        p #{comment.body}
+            .container
+                form(action='/posts', method="post") 
+                    p| Title:
+                    |  
+                    input(type='text', name='title', size='30', placeholder='Type the title of the message here')
+
+                    br
+
+                    p|  Body:
+                    |  
+                    textarea(name='body', rows='10', cols='30', placeholder='Type your message here')
+
+                    br
+                    |  
+                    button(class="buttonblue",type='submit') Submit
+
+
+
+    script(src="/js/jquery-3.1.1.js")
+    script(src="/js/custom.js")
+    script.
+        $(document).ready(function(){
+        $('.container').hide();
+        });
+        $('.addpost').click(function(){
+        $('.allPosts').hide()      //- event.preventDefault();
+        $('.container').toggle()
+        })
+        $('.buttonblue').click(function(){
+        $('.allPosts').show()
+        })

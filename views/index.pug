@@ -1,70 +1,69 @@
-doctype html
 html
-  head
-    title Blog
-    link(rel='stylesheet', type='text/css', href='../css/style.css')
-    link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    head
+        title Blog
+        link(rel='stylesheet', type='text/css', href='../css/style.css')
+        link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
-  body
-    wrapper
- 
-      div(class="home")
+    body
+        wrapper
 
-        div(class="center")
-          button(class="indexbutton", type='button', onclick="location.href='/signup'") Sign up
+            div(class="home")
 
-           button(class="indexbutton", type='button', onclick="location.href='/login'") Log in
+                div(class="center")
+                    button(class="indexbutton", type='button', onclick="location.href='/signup'") Sign up
 
-    //- div.form
-    //-   ul.tab-group
-    //-     li.tab.active
-    //-       a(href='#signup') Sign Up
-    //-     li.tab
-    //-       a(href='#login') Log In
-    //-   .tab-content
-    //-     #signup
-    //-       h1 Sign Up for Free
-    //-       form(action='/profile', method='post')
-    //-         .top-row
-    //-           .field-wrap
-    //-             label
-    //-               | Username
-    //-               span.req *
-    //-             |  
-    //-             input(type='text', required='', autocomplete='off')
-    //-         .field-wrap
-    //-           label
-    //-             | Email Address
-    //-             span.req *
-    //-           |  
-    //-           input(type='email', required='', autocomplete='off')
-    //-         .field-wrap
-    //-           label
-    //-             | Set A Password
-    //-             span.req *
-    //-           |  
-    //-           input(type='password', required='', autocomplete='off')
-    //-         |  
-    //-         button.button.button-block(type='submit') Get Started
-    //-     #login
-    //-       h1 Welcome Back!
-    //-       form(action='/', method='post')
-    //-         .field-wrap
-    //-           label
-    //-             | Email Address
-    //-             span.req *
-    //-           |  
-    //-           input(type='email', required='', autocomplete='off')
-    //-         .field-wrap
-    //-           label
-    //-             | Password
-    //-             span.req *
-    //-           |  
-    //-           input(type='password', required='', autocomplete='off')
-            
-    //-         |  
-    //-         button.button.button-block Log In
+                    button(class="indexbutton", type='button', onclick="location.href='/login'") Log in
+
+//- div.form
+//-   ul.tab-group
+//-     li.tab.active
+//-       a(href='#signup') Sign Up
+//-     li.tab
+//-       a(href='#login') Log In
+//-   .tab-content
+//-     #signup
+//-       h1 Sign Up for Free
+//-       form(action='/profile', method='post')
+//-         .top-row
+//-           .field-wrap
+//-             label
+//-               | Username
+//-               span.req *
+//-             |  
+//-             input(type='text', required='', autocomplete='off')
+//-         .field-wrap
+//-           label
+//-             | Email Address
+//-             span.req *
+//-           |  
+//-           input(type='email', required='', autocomplete='off')
+//-         .field-wrap
+//-           label
+//-             | Set A Password
+//-             span.req *
+//-           |  
+//-           input(type='password', required='', autocomplete='off')
+//-         |  
+//-         button.button.button-block(type='submit') Get Started
+//-     #login
+//-       h1 Welcome Back!
+//-       form(action='/', method='post')
+//-         .field-wrap
+//-           label
+//-             | Email Address
+//-             span.req *
+//-           |  
+//-           input(type='email', required='', autocomplete='off')
+//-         .field-wrap
+//-           label
+//-             | Password
+//-             span.req *
+//-           |  
+//-           input(type='password', required='', autocomplete='off')
+
+//-         |  
+//-         button.button.button-block Log In
 
     script(src="/js/jquery-3.1.1.js")
     script(src="/js/custom.js")
