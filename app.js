@@ -1,9 +1,10 @@
-const express = require ('express')
-const pg = require('pg')
-const Sequelize = require ('sequelize')
-const bodyParser = require ('body-parser')
-const app = express ()
+const express = require ('express');
+const pg = require('pg');
+const Sequelize = require ('sequelize');
+const bodyParser = require ('body-parser');
+const app = express ();
 const session = require('express-session');
+const bcrypt = require('bcrypt');
 
 //setting view folder
 app.set('views','./views');
@@ -113,35 +114,80 @@ app.get('/posts', function(request, response){
 
 
 app.post('/signup', function(request, response){
-	User.create({
-		userName: request.body.username,
-		email: request.body.email,
-		password: request.body.password
+    if(request.body.username.length === 0){
+        response.redirect('/signup?message=' + encodeURIComponent('Provide your username'))
+        return
+    }
 
-	}).then( function() {
-		// if (request.body.pssword = cpassword){
-			response.redirect("/posts")
-		})
-	console.log("ik doe het")
-})
+    if(request.body.email.length === 0){
+        response.redirect('/signup?message=' + encodeURIComponent('Provide your last name'))
+        return
+    }
+
+    if(request.body.password.length === 0) {
+        response.redirect('/signup?message=' + encodeURIComponent('Provide a password'))
+        return
+    }
+    if(request.body.password !== request.body.cpassword) {
+        response.redirect('/signup?message=' + encodeURIComponent('The passwords you provided are not identical'))
+        return
+    }
+    bcrypt.hash('request.body.password', 8, function(err, hash){
+        if (err) throw err    
+            User.create ({
+            userName: request.body.username,
+            email: request.body.email,
+            password: hash
+   	}).then(function(user) {
+        request.session.user = user;
+        response.redirect("/posts")
+		});
+    }); 
+    console.log("ik doe het")
+});
 
 app.post('/login', function(request, response){
-	User.findOne({
+    if(request.body.email.length === 0) {
+        response.redirect('/Login?message=' + encodeURIComponent("Please fill out your email address."))
+        return
+    }
+
+    if(request.body.password.length === 0) {
+        response.redirect('/Login?message=' + encodeURIComponent("Please fill out your password."))
+        return
+    }
+    User.findOne({
 		where: {
 			email: request.body.email
 		}
 	}).then(function (user){
-		if (user !== null && request.body.password === user.password){
-			request.session.user = user;
-			response.redirect('/posts');
-		} else {
-			response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
-		}
-	}, function (error) {
-		response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
-	});
+        if (user == undefined) {
+            response.redirect('/signup?message=' + encodeURIComponent("This account does not exist. Please sign up first."));
+        }
+        console.log(user);
+        bcrypt.compare(request.body.password, user.password, (err) =>{
+            if (err) {
+                response.redirect('/?message=' + encodeURIComponent("Invalid email or password."))
+            }
+            else {
+                request.session.user = user
+                response.redirect('/profile')
+            }
+        })
+    })
+})
 
-});
+//		if (user !== null && request.body.password === user.password){
+//			request.session.user = user;
+//			response.redirect('/posts');
+//		} else {
+//			response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
+//		}
+//	}, function (error) {
+//		response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
+//	});
+//
+//});
 
 app.post('/posts', function(request, response){
 	
