@@ -105,6 +105,7 @@ app.get('/posts', function(request, response){
 			{
 				messages:posts,
 				name: request.session.user.userName
+                commentUserName: 
 			});
 		})
 	}})
@@ -189,7 +190,7 @@ app.post('/login', function(request, response){
 //
 //});
 
-app.post('/posts', function(request, response){
+app.post('/profile', function(request, response){
 	
 	Post.create({
 		title: request.body.title,
@@ -197,7 +198,7 @@ app.post('/posts', function(request, response){
 		userId: request.session.user.id
 		//  
 	}).then(function(){
-		response.redirect("/posts")
+		response.redirect("/profile")
 	})
 })
 
@@ -212,6 +213,7 @@ app.post('/posts', function(request, response){
 		response.redirect("/posts")
 	})
 })
+
 app.post('/comment', function(request, response){
 	Comment.create({
 		body: request.body.body,
@@ -219,8 +221,9 @@ app.post('/comment', function(request, response){
 		userId: request.session.user.id
 	}).then(function(){
 		response.redirect("/profile")
+        })
 	})
-})
+
 app.post('/comments', function(request, response){
 	Comment.create({
 		body: request.body.body,
