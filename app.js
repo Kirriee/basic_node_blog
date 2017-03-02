@@ -17,6 +17,12 @@ app.use(bodyParser.urlencoded({     // to ssupport URL-encoded bodies
 
 app.use(express.static('statics'));
 
+app.use(session({
+	secret: 'oh wow very secret much security',
+	resave: true,
+	saveUninitialized: false
+}));
+
 var db = new Sequelize ('postgres://' + process.env.POSTGRES_USER + ':' + process.env.POSTGRES_PASSWORD + '@localhost/blogapp');
 
 
@@ -30,27 +36,92 @@ db
 });
 
 
+
+
 // get request index page
 app.get('/', function(request, response){
 	response.render('index.pug');
 });
 
+// get request signup page
+app.get('/signup', function(request, response){
+	response.render('signup')
+});
+// get request login page
+app.get('/login', function(request, response){
+	response.render('login')
+});
+
+app.get('/profile', function(request, response){
+	var user = request.session.user;
+	if (user === undefined) {
+		response.redirect('/login');
+	} 
+	else {
+		Post.findAll(
+		{
+			where:
+			{
+				userId: request.session.user.id
+			},
+			include:[ User, Comment ]
+		})
+		.then(function(posts){
+			// console.log(posts)
+			// console.log('logging comments')
+			// console.log(posts[0].comments)
+
+			// for (var i=0; i<posts.length; i++){
+			// 	console.log(posts[i].comments)
+			// }
+
+			response.render('profile',
+			{
+				messages: posts,
+				name: request.session.user.userName
+			});
+
+		
+		})
+		
+	}
+})
 
 
-app.use(session({
-    secret: 'oh wow very secret much security',
-    resave: true,
-    saveUninitialized: false
-}));
+// get request posts page
+app.get('/posts', function(request, response){
+	var user = request.session.user;
+	if (user === undefined) {
+		response.redirect('/login');
+	} else {
+		Post.findAll(
+		{
+			include: [User, Comment]
+		}
+		)
+		.then (function(posts){
+			response.render('posts',
+			{
+				messages:posts,
+				name: request.session.user.userName
+			});
+		})
+	}})
+
+
+
+
 
 app.post('/signup', function(request, response){
 	User.create({
 		userName: request.body.username,
 		email: request.body.email,
 		password: request.body.password
+
 	}).then( function() {
-		response.redirect("/")
-	})
+		// if (request.body.pssword = cpassword){
+			response.redirect("/posts")
+		})
 	console.log("ik doe het")
 })
 
@@ -62,34 +133,117 @@ app.post('/login', function(request, response){
 	}).then(function (user){
 		if (user !== null && request.body.password === user.password){
 			request.session.user = user;
-			response.redirect('/profile');
+			response.redirect('/posts');
 		} else {
 			response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
 		}
 	}, function (error) {
 		response.redirect('/?message=' + encodeURIComponent("Invalid email or password."));
 	});
+
 });
+
+app.post('/posts', function(request, response){
+	
+	Post.create({
+		title: request.body.title,
+		body: request.body.body,
+		userId: request.session.user.id
+		//  
+	}).then(function(){
+		response.redirect("/posts")
+	})
+})
+
+app.post('/posts', function(request, response){
+	
+	Post.create({
+		title: request.body.title,
+		body: request.body.body,
+		userId: request.session.user.id
+		//  
+	}).then(function(){
+		response.redirect("/posts")
+	})
+})
+app.post('/comment', function(request, response){
+	Comment.create({
+		body: request.body.body,
+		postId: request.body.postId,
+		userId: request.session.user.id
+	}).then(function(){
+		response.redirect("/profile")
+	})
+})
+app.post('/comments', function(request, response){
+	Comment.create({
+		body: request.body.body,
+		postId: request.body.postId,
+		userId: request.session.user.id
+	}).then(function(){
+		response.redirect("/posts")
+	})
+})
+//databases
 
 
 var User = db.define('user', {
-	userName:  Sequelize.STRING,
-	email:  Sequelize.STRING,
-	password:  Sequelize.STRING,
-	
+	userName:  {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	password:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	email:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
 });
 
-app.get('/login', function(request, response){
-	response.render('login')
+var Post = db.define('post', {
+	title:  {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	},
+	body:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
 });
 
-app.get('/profile', function(request, response){
-	response.render('profile')
+var Comment = db.define('comment', {
+	body:   {
+		type: Sequelize.STRING,
+		allowNull: false,
+		isUnique: true
+	}
 });
 
-app.get('/signup', function(request, response){
-	response.render('signup')
-});
+
+
+
+
+
+
+
+
+// DB relations
+User.hasMany(Post)
+User.hasMany(Comment)
+Post.belongsTo(User)
+Post.hasMany(Comment)
+Comment.belongsTo(Post)
+Comment.belongsTo(User)
+
+
+
 
 db
     //sync the models
@@ -99,13 +253,28 @@ db
         return User.create({
         	userName: 'Jane Smith',
         	email: 'jane@hotmail.com', 
-        	password: 'ikbeneenpaard'
-        }).then(function () {
-        	var server = app.listen(4000, function () {
-        		console.log('Example app listening on port: ' + server.address().port);
-        	});
-        });
-    }, function (error) {
+        	password: '123'
+        }).then(function(user){
+        	return user.createPost({
+        		title: 'dit is een test',
+        		body: 'hallo hallo'
+        	})
+        })
+        .then(function(post){
+        	return post.createComment({
+        		body: "sklfksnv",
+        		userId: post.userId
+        	})
+        })
+
+    })
+
+    .then(function () {
+    	var server = app.listen(4000, function () {
+    		console.log('Example app listening on port: ' + server.address().port);
+    	});
+    }).then(function (error) {
     	console.log('sync failed: ');
     	console.log(error);
     });
+
