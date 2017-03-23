@@ -1,0 +1,90 @@
+
+doctype html
+html
+  head
+    title Blog
+    link(rel='stylesheet', type='text/css', href='../css/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
+  body
+    wrapper
+      nav
+        ul.navbar
+          li.leftside
+           a Hello #{name}
+          li.leftside
+            a(href='/profile') My profile
+          li
+            a(href='/posts') Home
+          li
+            a(class='addpost') Add post
+          li
+            a(href='/login') Edit profile
+          li
+            a(href='/signup') Log out
+
+  h1  Profile of #{name}
+  .allPosts.flex-container
+    each message in messages
+      .row
+        .card
+          
+          h3.messagetitle #{message.title}
+          p#postby By #{message.user.userName}
+          p #{message.body}
+          .commentstext
+           p Comments
+            img(src='../img/comment.png', alt='Comment', height='42', width='42')
+          .footerpost
+           form(class='comment', action='/comment', method="post")
+             input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
+             input(type="hidden" value=message.id, name="postId")
+             button(class="commentbutton submitbutton",type='submit') Send
+             
+           each comment in message.comments
+            p#addedcomment #{comment.body}
+
+             
+  .container
+      form#msform(action='/profile', method="post") 
+       fieldset
+        h2.fs-title Write your message here
+        h3.fs-subtitle Title:
+        
+        |  
+        input(type='text', name='title', size='30', placeholder='Type the title of the message here')
+        
+        br
+       
+        h3.fs-subtitle Body:
+        |  
+        textarea(name='body', rows='10', cols='30', placeholder='Type your message here')
+       
+        br
+        |  
+        button(class="buttonblue submitbutton",type='submit') Submit
+  
+
+
+  script(src="/js/jquery-3.1.1.js")
+  script(src="/js/custom.js")
+  script.
+       //- $(document).ready(function(){
+       //-  $('.container').hide();
+       //-  $('#addedcomment').hide();
+       //-  });
+        $('.addpost').click(function(){
+        $('.allPosts').hide()      //- event.preventDefault();
+        $('.container').toggle()
+        })
+        $('.buttonblue').click(function(){
+         $('.allPosts').show()
+        })
+        $('.commentstext').click(function(){
+        $('.footerpost').toggle()
+        })
+         $('.commentbutton').click(function(){
+         $('.footerpost').show()
+        })
+           
+   
+    
