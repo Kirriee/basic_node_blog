@@ -18,15 +18,16 @@ html
             a(href='/login') Edit profile
           li
             a(href='/signup') Log out
-  h1  All Posts
-  .allPosts.flex-container
+  .wrapper
+   h1  All Posts
+   .allPosts.flex-container
     each message in messages
       .row
         .card
           i.pin
           p #{message.title}
           p #{message.body}
-          p Post by: #{message.user.userName}
+          p Post by: #{message.user .userName}
           div.footerpost
            form(class='comment', action='/comments', method="post")
              input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
@@ -34,6 +35,7 @@ html
              button(class="sendbutton",type='submit') Send
              div#comments
       each comment in message.comments
+       
        p #{comment.body}
   .container
       form(action='/posts', method="post") 

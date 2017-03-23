@@ -79,6 +79,7 @@ app.get('/profile', function(request, response){
 			{
 				messages: posts,
 				name: request.session.user.userName
+
 			});
 
 		
@@ -143,7 +144,7 @@ app.post('/login', function(request, response){
 
 });
 
-app.post('/posts', function(request, response){
+app.post('/profile', function(request, response){
 	
 	Post.create({
 		title: request.body.title,
@@ -151,7 +152,7 @@ app.post('/posts', function(request, response){
 		userId: request.session.user.id
 		//  
 	}).then(function(){
-		response.redirect("/posts")
+		response.redirect("/profile")
 	})
 })
 
