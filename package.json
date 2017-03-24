@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Kirriee/basic_node_blog#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
     "express-session": "^1.15.1",
