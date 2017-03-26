@@ -105,7 +105,6 @@ app.get('/posts', function(request, response){
 			{
 				messages:posts,
 				name: request.session.user.userName
-                commentUserName: 
 			});
 		})
 	}})
