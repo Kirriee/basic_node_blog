@@ -28,7 +28,7 @@ html
           p #{message.body}
           .commentstext
            p Comments
-            img(src='../public/img/comment.png', alt='Comment', height='42', width='42')
+            
           .footerpost
            form(class='comment', action='/comment', method="post")
              input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
