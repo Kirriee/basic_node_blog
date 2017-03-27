@@ -2,7 +2,7 @@ doctype html
 html
   head
     title Blog
-    link(rel='stylesheet', type='text/css', href='../css/style.css')
+    link(rel='stylesheet', type='text/css', href='../public/css/style.css')
     link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
   body
     wrapper
@@ -28,7 +28,7 @@ html
           p #{message.body}
           .commentstext
            p Comments
-            img(src='../img/comment.png', alt='Comment', height='42', width='42')
+            img(src='../public/img/comment.png', alt='Comment', height='42', width='42')
           .footerpost
            form(class='comment', action='/comment', method="post")
              input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
@@ -58,20 +58,22 @@ html
   
 
 
-  script(src="/js/jquery-3.1.1.js")
-  script(src="/js/custom.js")
+  script(src="../public/js/jquery-3.1.1.js")
+  script(src="../public/js/custom.js")
   script.
-       $(document).ready(function(){
-        $('.container').hide();
-        });
-        $('.addpost').click(function(){
-        $('.allPosts').hide()      //- event.preventDefault();
-        $('.container').toggle()
-        })
-        $('.buttonblue').click(function(){
-         $('.allPosts').show()
-        })
-        
+      $('.addpost').click(function(){
+      $('.allPosts').hide()      //- event.preventDefault();
+      $('.container').toggle()
+      })
+      $('.buttonblue').click(function(){
+      $('.allPosts').show()
+      })
+      $('.commentstext').click(function(){
+      $('.footerpost').toggle()
+      })
+      $('.commentbutton').click(function(){
+      $('.footerpost').show()
+      })
            
    
     

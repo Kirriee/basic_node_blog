@@ -3,7 +3,7 @@ doctype html
 html
   head
     title Blog
-    link(rel='stylesheet', type='text/css', href='../css/style.css')
+    link(rel='stylesheet', type='text/css', href='../public/css/style.css')
     link(href='https://fonts.googleapis.com/css?family=Oswald', rel='stylesheet')
   body
     wrapper
@@ -33,7 +33,7 @@ html
            p Comments
             img(src='../img/comment.png', alt='Comment', height='42', width='42')
           .footerpost
-           form(class='comment', action='/comment', method="post")
+           form(class='comment', action='/comments', method="post")
              input(class='comment', type='text', name='body', size='30', placeholder='Add a comment...')
              input(type="hidden" value=message.id, name="postId")
              button(class="commentbutton submitbutton",type='submit') Send
@@ -63,13 +63,9 @@ html
   
 
 
-  script(src="/js/jquery-3.1.1.js")
-  script(src="/js/custom.js")
+  script(src="../public/js/jquery-3.1.1.js")
+  script(src="../public/js/custom.js")
   script.
-       //- $(document).ready(function(){
-       //-  $('.container').hide();
-       //-  $('#addedcomment').hide();
-       //-  });
         $('.addpost').click(function(){
         $('.allPosts').hide()      //- event.preventDefault();
         $('.container').toggle()

@@ -1,24 +1,29 @@
 // ADD SEQUELIZE LIBRARY
-const sequelize = require('sequelize')
-const db = 
+const Sequelize = require('sequelize');
+const db = { };
 
-//CONNECTING WITH 
-
-var db = new Sequelize ('postgres://' + process.env.POSTGRES_USER + ':' + process.env.POSTGRES_PASSWORD + '@localhost/blogapp');
-
-
-
-// TESTING DATABASE CONNECTION
-db 
-.sync({ force: true })
-.then(function(err) {
-    console.log('Testing table: check!');
-}, function (err) { 
-    console.log('An error occurred while creating the table:', err);
+// CONNECTING WITH DATABASE
+db.connect = new Sequelize('blogapp', process.env.POSTGRES_USER, process.env.POSTGRES_PASSWORD, {
+  dialect: 'postgres',
+  host: 'localhost',
+  define: {
+      timestamps: false
+  }
 });
 
+// Testing connection
+db.connect
+    .authenticate()
+    .then(function(err) {
+       console.log('Connection has been established successfully.');
+    }, function (err) {
+        console.log('Unable to connect to the database:', err);
+    });
+
+
+
 // DEFINING USER MODEL
-var User = db.define('user', {
+db.User = db.connect.define('user', {
     userName:  {
         type: Sequelize.STRING,
         allowNull: false,
@@ -38,8 +43,7 @@ var User = db.define('user', {
 
 
 // DEFINING POST MODEL
-
-var Post = db.define('post', {
+db.Post = db.connect.define('post', {
     title:  {
         type: Sequelize.STRING,
         allowNull: false,
@@ -53,11 +57,10 @@ var Post = db.define('post', {
 });
 
 // DEFINING COMMENT MODEL
-
-var Comment = db.define('comment', {
+db.Comment = db.connect.define('comment', {
     userName:  {
         type: Sequelize.STRING,
-        allowNull: false,
+//        allowNull: false,
         isUnique: true
     },
     body:   {
@@ -77,33 +80,83 @@ db.Comment.belongsTo(db.Post)
 db.Comment.belongsTo(db.User)
 
 
-// SYNCING THE DATABASE AND CREATING ADMIN USER
-db
+//SYNCING THE DATABASE AND CREATING ADMIN USER
+db.connect
     .sync({force:true})
+
     .then(function(){
-       
-        return User.create({
-            userName: 'Admin',
-            email: 'admin@mail.com', 
-            password: '123'
-        }).then(function () {
-            var server = app.listen(4000, function () {
-                console.log('Example app listening on port: ' + server.address().port);
-            });
-        });
-    }, function (error) {
-        console.log('sync failed: ');
-        console.log(error);
-    });
+    return db.User.create({
+        userName: 'Admin',
+        email: 'admin@mail.com', 
+        password: '1'
+    })
+        .then(function(user) {
+        return user.createPost({
+        title: 'First title',
+        body: 'First body'
+        })
+    })
+        .then(function(post){
+        return post.createComment({
+        body: 'First Comment',
+        userId: post.userId
+        })
+    })
+        
+        .then(function(){
+        return db.User.create({
+            userName: 'Admin2',
+            email: 'admin2@mail.com', 
+            password: '2'
+        })
+    })
+            .then(function(user) {
+            return user.createPost({
+                title: 'Second title',
+                body: 'Second body'
+            })
+        })
+        .then(function(post){
+            return post.createComment({
+                body: 'Second Comment',
+                userId: post.userId
+            })
+        })
+            
+            .then(function(){
+            return db.User.create({
+                userName: 'Admin3',
+                email: 'admin3@mail.com', 
+                password: '3'
+            })
+    })
+            .then(function(user) {
+                return user.createPost({
+                    title: 'Third title',
+                    body: 'Third body'
+                })
+            })
+            .then(function(post){
+                return post.createComment({
+                    body: 'Third Comment',
+                    userId: post.userId
+                })
+            })
+                .catch (function(error){
+                console.log(error);
+                })
+            })
+
+
+// EXPORT db
+module.exports = db
 
 
 
 
-
-
-module.exports = {
-    db:db, 
-    User:User,
-    Post:Post,
-    Comment:Comment,
-}
+//module.exports = {
+//    db:db, 
+//    User:User,
+//    Post:Post,
+//    Comment:Comment,
+//}
